@@ -9,8 +9,7 @@ public class GameManager : Singleton<GameManager>
     //[SerializeField] UserData userData;
     //[SerializeField] CSVData csv;
     //private static GameState gameState = GameState.MainMenu;
-
-    // Start is called before the first frame update
+    private int score;
     protected void Awake()
     {
         //base.Awake();
@@ -31,6 +30,11 @@ public class GameManager : Singleton<GameManager>
         //ChangeState(GameState.MainMenu);
 
         UIManager.Ins.OpenUI<MianMenu>();
+    }
+
+    public void HandlerScore()
+    {
+        score++;
     }
 
     //public static void ChangeState(GameState state)
