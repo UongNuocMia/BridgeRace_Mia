@@ -2,23 +2,33 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class Player : MonoBehaviour
+public  class Character : GameUnit
 {
+    [SerializeField] protected Brick brickPrefab;
+    protected float interactRange;
+    protected float heightOfBrick;
+    protected RaycastHit hit;
+    protected List<Brick> brickList = new();
+    protected NavMeshAgent agent;
 
-
-    private RaycastHit hit;
-    private float interactRange;
-    private float heightOfBrick;
-    [SerializeField] private Brick brickPrefab;
-    private List<Brick> brickList;
-
-    private void OnInit()
+    private void Start()
     {
-        interactRange = 2f;
+        OnInit();
     }
 
-    private void RaycastScan()
+    protected virtual void OnInit()
+    {
+        interactRange = 0.2f;
+        agent = transform.GetComponent<NavMeshAgent>();
+    }
+    private void Update()
+    {
+        RaycastScan();
+    }
+
+    protected virtual void RaycastScan()
     {
         if (Physics.Raycast(transform.position, transform.forward, out hit, interactRange))
         {
@@ -36,31 +46,39 @@ public class Player : MonoBehaviour
             }
         }
     }
-
     private void ReachEndPoint()
     {
-        throw new NotImplementedException();
+        GameManager.Ins.ChangeState(GameState.Finish);
     }
 
     private void CheckBridge(Bridge bridge)
     {
-        throw new NotImplementedException();
+
     }
 
     private void CheckBrick(Brick brick)
     {
+        brick.OnCollectBox();
         AddBrick();
     }
 
-    private void AddBrick()
+    protected virtual void AddBrick()
     {
         Brick brickClone = Instantiate(brickPrefab, transform);
-        brickList.Add(brickClone);
         brickClone.transform.localPosition = Vector3.zero;
-        GameManager.Ins.HandlerScore();
+        brickList.Add(brickClone);
         HandlerBrickHeight();
     }
 
+    protected virtual void RemoveBrick()
+    {
+
+    }
+
+    protected virtual void RemoveAllBrick()
+    {
+
+    }
     private void HandlerBrickHeight()
     {
         if (brickList.Count == 0) return;

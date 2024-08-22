@@ -1,14 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
+
+
+
+public enum GameState { MainMenu, GamePlay, Finish, Setting }
 
 public class GameManager : Singleton<GameManager>
 {
     //[SerializeField] UserData userData;
     //[SerializeField] CSVData csv;
-    //private static GameState gameState = GameState.MainMenu;
+    private static GameState gameState = GameState.MainMenu;
+    private List<Brick> brickinGroundList;
+
+    public List<Brick> BrickinGroundList => brickinGroundList;
+
+
     private int score;
     protected void Awake()
     {
@@ -32,19 +41,42 @@ public class GameManager : Singleton<GameManager>
         UIManager.Ins.OpenUI<MianMenu>();
     }
 
+
     public void HandlerScore()
     {
         score++;
     }
 
-    //public static void ChangeState(GameState state)
-    //{
-    //    gameState = state;
-    //}
+    public void OnStartGame()
+    {
+        LevelManager.Ins.OnLoadMap();
+    }
 
-    //public static bool IsState(GameState state)
-    //{
-    //    return gameState == state;
-    //}
-  
+    public void ChangeState(GameState state)
+    {
+        gameState = state;
+        switch (state)
+        {
+            case GameState.MainMenu:
+                break;
+            case GameState.GamePlay:
+                break;
+            case GameState.Finish:
+                OnFinish();
+                break;
+            case GameState.Setting:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void OnFinish()
+    {
+
+    }
+
+    public static bool IsState(GameState state) => gameState == state;
+
+
 }
