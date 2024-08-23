@@ -5,31 +5,50 @@ using UnityEngine;
 public class Level : MonoBehaviour
 {
     [SerializeField] private Brick brickPrefab;
-    [SerializeField] private Transform spawnBrickPoint;
+    [SerializeField] private List<Transform> spawnBrickPointList;
+    [SerializeField] private Transform spawnCharacterPoint;
     [SerializeField] private List<GameUnit> brickList = new();
     private float brickLength;
-    private float spacing = 2;
-    private float halfSpacing = 1;
+    private float spacing = 4;
+    private float halfSpacing = 2;
     private float halfLength = 0.5f;
-    private int rows = 5;
-    private int columns = 5;
-    private void Start()
+    private int rows = 10;
+    private int columns = 10;
+    private int stage = 0;
+    private int charNumb;
+    public int CharNumb => charNumb;
+    public void OnInit()
     {
+        charNumb = Random.Range(4, 6);
+        GetSpawnCharacterPosition();
         GenarateBrick();
+    }
+
+    public List<Vector3> GetSpawnCharacterPosition()
+    {
+        List<Vector3> transformList = new();
+        int characterSpacing = 4;
+
+        for (int i = 0; i < charNumb; i++)
+        {
+            transformList.Add(spawnCharacterPoint.position + new Vector3(i * characterSpacing, 0f, 0f));
+        }
+        return transformList;
     }
 
     private void GenarateBrick()
     {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < 5; j++)
+            for (int j = 0; j < columns; j++)
             {
                 //Vector3 newPosition = spawnBrickPoint.position - new Vector3(i * spacing, spawnBrickPoint.position.y, j * spacing);
-                Vector3 position = spawnBrickPoint.position + new Vector3(
+                Vector3 position = spawnBrickPointList[stage].position + new Vector3(
                (i - (rows - 1) / 2) * spacing + halfSpacing - halfLength, 0,
                (j - (columns - 1) / 2) * spacing + halfSpacing - halfLength);
-                GameUnit brickClone = SimplePool.Spawn(brickPrefab,
-                position, spawnBrickPoint.rotation);
+                Brick brickClone = (Brick)SimplePool.Spawn(brickPrefab,
+                position, spawnBrickPointList[stage].rotation);
+                brickClone.RandomColor();
                 brickList.Add(brickClone);
             }
         }

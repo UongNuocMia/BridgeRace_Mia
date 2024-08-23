@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Brick : GameUnit
 {
-    [SerializeField] private MeshRenderer colorMaterial;
+    [SerializeField] private MeshRenderer colorRenderer;
     [SerializeField] private GameObject visualBrick;
     [SerializeField] private BoxCollider boxCollider;
 
@@ -13,9 +13,16 @@ public class Brick : GameUnit
 
     public bool isShow() => visualBrick.gameObject.activeInHierarchy;
 
-    public void OnChangeColor(ColorEnum colorEnum)
+    public void OnChangeColor(int colorEnumIndex)
     {
-        //colorMaterial.material = GameManager.Ins.GetColorByEnum(colorEnum);
+        colorRenderer.material = GameManager.Ins.GetMaterial(ColorEnum.White); //change later
+    }
+
+
+    public void RandomColor()
+    {
+        int colorIndex = Random.Range(0, GameManager.Ins.GetMaterialList().Count);
+        OnChangeColor(colorIndex);
     }
 
     public void OnCollectBox()

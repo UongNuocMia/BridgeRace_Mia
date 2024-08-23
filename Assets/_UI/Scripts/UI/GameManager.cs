@@ -12,10 +12,14 @@ public class GameManager : Singleton<GameManager>
 {
     //[SerializeField] UserData userData;
     //[SerializeField] CSVData csv;
-    private static GameState gameState = GameState.MainMenu;
+    [SerializeField] private DynamicJoystick dynamicJoystick;
+    [SerializeField] private ColorDataSO colorDataSO;
     private List<Brick> brickinGroundList;
+    private Player player;
 
+    private static GameState gameState = GameState.MainMenu;
     public List<Brick> BrickinGroundList => brickinGroundList;
+    public DynamicJoystick DynamicJoystick => dynamicJoystick;
 
 
     private int score;
@@ -39,17 +43,27 @@ public class GameManager : Singleton<GameManager>
         //ChangeState(GameState.MainMenu);
 
         UIManager.Ins.OpenUI<MianMenu>();
+        PrepareLevel();
     }
-
 
     public void HandlerScore()
     {
         score++;
     }
 
-    public void OnStartGame()
+    public void PrepareLevel()
     {
         LevelManager.Ins.OnLoadMap();
+        
+        CameraFollow.FindPlayer(LevelManager.Ins.GetPlayer().transform);
+    }
+    public void OnStartGame()
+    {
+        List<Enemy> enemyList = LevelManager.Ins.EnemyList;
+        for (int i = 0; i < enemyList.Count; i++)
+        {
+            enemyList[i].ChangeState(new CollectBrickState());
+        }
     }
 
     public void ChangeState(GameState state)
@@ -78,5 +92,13 @@ public class GameManager : Singleton<GameManager>
 
     public static bool IsState(GameState state) => gameState == state;
 
+    public Material GetMaterial(ColorEnum colorEnum)
+    {
+        return colorDataSO.GetMaterials(colorEnum);
+    }
+    public List<Material> GetMaterialList()
+    {
+        return colorDataSO.materialsList;
+    }
 
 }

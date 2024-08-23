@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Experimental.AI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private DynamicJoystick dynamicJoystick;
+    private DynamicJoystick dynamicJoystick;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float speed = 10;
     [SerializeField] private Player player;
@@ -15,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         nav = GetComponent<NavMeshAgent>();
+        dynamicJoystick = GameManager.Ins.DynamicJoystick;
     }
 
     private void Update()
@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         Vector3 moveDirection = new Vector3(dynamicJoystick.Direction.x, 0f, dynamicJoystick.Direction.y);
-        //transform.position += moveDirection.normalized * speed * Time.deltaTime;
+        Debug.Log("moveDirection____" + moveDirection);
         Vector3 destination = transform.position + moveDirection * speed;
         nav.SetDestination(destination);
         isRunning = moveDirection != Vector3.zero;

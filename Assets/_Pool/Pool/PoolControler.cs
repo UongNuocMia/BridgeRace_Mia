@@ -145,6 +145,7 @@ public enum PoolType
 {
     None,
     Brick,
+    Enemy,
 }
 
 

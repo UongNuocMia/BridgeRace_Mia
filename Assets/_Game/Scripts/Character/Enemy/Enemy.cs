@@ -18,7 +18,7 @@ public class Enemy : Character
     {
         base.OnInit();
         agent = GetComponent<NavMeshAgent>();
-        ChangeState(new CollectBrickState());
+        ChangeState(new IdleState());
         randomBrick = Random.Range(5, 10);
     }
 

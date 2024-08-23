@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class CameraFollow : Singleton<CameraFollow>
+public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] private Transform target;
+    [SerializeField] private static Transform target;
     [SerializeField] private Vector3 offset; // x = -5; y = 10
     [SerializeField] private float speed = 20;
 
-    public void FindPlayer(Transform playerTransform)
+    public static void FindPlayer(Transform playerTransform)
     {
         target = playerTransform;
     }
