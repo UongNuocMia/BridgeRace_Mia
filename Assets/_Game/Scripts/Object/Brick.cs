@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Brick : GameUnit
@@ -8,21 +8,19 @@ public class Brick : GameUnit
     [SerializeField] private GameObject visualBrick;
     [SerializeField] private BoxCollider boxCollider;
 
+    private ColorEnum brickColorEnum;
+
+    public ColorEnum BrickColorEnum => brickColorEnum;
+
     private void OnHideVisual(bool isShow) => visualBrick.SetActive(!isShow);
     private void OnHideCollision(bool isShow) => boxCollider.enabled = !isShow;
 
     public bool isShow() => visualBrick.gameObject.activeInHierarchy;
 
-    public void OnChangeColor(int colorEnumIndex)
+    public void OnChangeColor(ColorEnum colorEnum)
     {
-        colorRenderer.material = GameManager.Ins.GetMaterial(ColorEnum.White); //change later
-    }
-
-
-    public void RandomColor()
-    {
-        int colorIndex = Random.Range(0, GameManager.Ins.GetMaterialList().Count);
-        OnChangeColor(colorIndex);
+        brickColorEnum = colorEnum;
+        colorRenderer.material = GameManager.Ins.GetMaterial(colorEnum);
     }
 
     public void OnCollectBox()
@@ -34,7 +32,7 @@ public class Brick : GameUnit
 
     private IEnumerator BackToTheGround()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(6f);
         OnHideCollision(false);
         OnHideVisual(false);
     }

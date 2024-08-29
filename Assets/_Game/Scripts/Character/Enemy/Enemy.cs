@@ -2,22 +2,23 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Enemy : Character
 {
+    private const string IS_RUNNING = "IsRunning";
 
-    private GameUnit nearstBrick;
-    public GameUnit NearstBrick => nearstBrick;
-    private IState<Enemy> currentState;
+    [SerializeField] private Animator anim;
+
     public int randomBrick;
+    private Brick nearstBrick;
+    private IState<Enemy> currentState;
 
+    public Brick NearstBrick => nearstBrick;
     public List<Brick> BrickList => brickList;
 
     protected override void OnInit()
     {
         base.OnInit();
-        agent = GetComponent<NavMeshAgent>();
         ChangeState(new IdleState());
         randomBrick = Random.Range(5, 10);
     }
@@ -36,8 +37,10 @@ public class Enemy : Character
     {
         Vector3 moveDirection = new Vector3(target.position.x, 0f, target.position.z);
         Vector3 destination = moveDirection;
+        agent.speed = speed;
         agent.SetDestination(destination);
-        float rotateSpeed = 10f;
+        float rotateSpeed = 5f;
+        anim.SetBool(IS_RUNNING, true);
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
     }
 
@@ -65,15 +68,15 @@ public class Enemy : Character
 
     public void FindNearestBrick()
     {
-        List<GameUnit> brickListOnGround = LevelManager.Ins.ListBrickOnGround;
-        if(brickListOnGround.Count > 0)
+        Dictionary< Brick,ColorEnum> brickDictOnGround = LevelManager.Ins.brickDict;
+        if(brickDictOnGround.Count > 0)
         {
-            float distance = Vector3.Distance(this.transform.position, brickListOnGround[0].transform.position);
-            foreach (var brick in brickListOnGround)
+            float distance = 10;
+            foreach (var item in brickDictOnGround)
             {
-                if (distance < Vector3.Distance(this.transform.position, brick.transform.position))
+                if (item.Value == characterColorEnum && distance < Vector3.Distance(this.transform.position, item.Key.transform.position))
                 {
-                    nearstBrick = brick;
+                    nearstBrick = item.Key;
                 }
             }
         }

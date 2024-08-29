@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -7,11 +5,17 @@ using UnityEngine.AI;
 public  class Character : GameUnit
 {
     [SerializeField] protected Brick brickPrefab;
+    [SerializeField] protected Transform brickPosition;
+    [SerializeField] private SkinnedMeshRenderer colorRenderer;
+    [SerializeField] protected float speed = 5;
     protected float interactRange;
-    protected float heightOfBrick;
+    protected float heightOfBrick = 0.5f;
+    protected ColorEnum characterColorEnum;
     protected RaycastHit hit;
     protected List<Brick> brickList = new();
     protected NavMeshAgent agent;
+    
+    
 
     private void Start()
     {
@@ -58,6 +62,8 @@ public  class Character : GameUnit
 
     private void CheckBrick(Brick brick)
     {
+        if (characterColorEnum != brick.BrickColorEnum || !brick.isShow())
+            return;
         brick.OnCollectBox();
         AddBrick();
     }
@@ -66,6 +72,7 @@ public  class Character : GameUnit
     {
         Brick brickClone = Instantiate(brickPrefab, transform);
         brickClone.transform.localPosition = Vector3.zero;
+        brickClone.OnChangeColor(characterColorEnum);
         brickList.Add(brickClone);
         HandlerBrickHeight();
     }
@@ -82,11 +89,14 @@ public  class Character : GameUnit
     private void HandlerBrickHeight()
     {
         if (brickList.Count == 0) return;
-        Vector3 newHeightY = new();
-        for (int i = 0; i < brickList.Count; i++)
-        {
-            newHeightY.y = Mathf.Abs(i * heightOfBrick);
-            brickList[i].transform.localPosition = new Vector3(newHeightY.x, newHeightY.y);
-        }
+        Vector3 newHeightY = brickPosition.localPosition;
+        newHeightY.y += Mathf.Abs((brickList.Count - 1) * heightOfBrick);
+        brickList[brickList.Count - 1].transform.localPosition = new Vector3(newHeightY.x, newHeightY.y, newHeightY.z);
+    }
+
+    public void OnChangeColor(Material material,ColorEnum colorEnum)
+    {
+        colorRenderer.material = material;
+        characterColorEnum = colorEnum;
     }
 }

@@ -68,6 +68,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7725759506728793666}
+  - {fileID: 5035736384879574739}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &8255504872138431677
@@ -132,6 +133,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolType: 0
   brickPrefab: {fileID: 7085948982878459276, guid: eab8f0ba4c723f54bbeeb14beb1f9621, type: 3}
+  brickPosition: {fileID: 5035736384879574739}
+  colorRenderer: {fileID: 5326013485817881002}
+  speed: 5
 --- !u!114 &646315966275650529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,10 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 155cdc995af24fa40b816f17dae2eebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dynamicJoystick: {fileID: 8135886326569738823, guid: 56fae09712773584fb63896d473a98ee, type: 3}
   rb: {fileID: 5148882491249915562}
-  speed: 10
-  player: {fileID: 0}
+  player: {fileID: 8127309061321723543}
 --- !u!114 &5650039023674775138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +186,37 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!1 &8659096429456106489
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5035736384879574739}
+  m_Layer: 0
+  m_Name: BrickPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5035736384879574739
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8659096429456106489}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.25, z: -0.51}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8598555742092679268}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3628722835219473437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -467,3 +500,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!137 &5326013485817881002 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -310153274918992457, guid: 93b6444b4be9ecc44a98a83cef570ca8, type: 3}
+  m_PrefabInstance: {fileID: 3628722835219473437}
+  m_PrefabAsset: {fileID: 0}

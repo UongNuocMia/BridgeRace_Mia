@@ -14,12 +14,14 @@ public class GameManager : Singleton<GameManager>
     //[SerializeField] CSVData csv;
     [SerializeField] private DynamicJoystick dynamicJoystick;
     [SerializeField] private ColorDataSO colorDataSO;
-    private List<Brick> brickinGroundList;
+    private List<Enemy> enemyList; 
     private Player player;
 
     private static GameState gameState = GameState.MainMenu;
-    public List<Brick> BrickinGroundList => brickinGroundList;
     public DynamicJoystick DynamicJoystick => dynamicJoystick;
+    public List<Brick> brickinGroundList { private set; get; }
+    public List<Character> characterList { private set; get; }
+    public List<ColorEnum> randomColorList { private set; get; } = new();
 
 
     private int score;
@@ -54,12 +56,12 @@ public class GameManager : Singleton<GameManager>
     public void PrepareLevel()
     {
         LevelManager.Ins.OnLoadMap();
-        
-        CameraFollow.FindPlayer(LevelManager.Ins.GetPlayer().transform);
+        player = LevelManager.Ins.GetPlayer();
+        CameraFollow.FindPlayer(player.transform);
     }
     public void OnStartGame()
     {
-        List<Enemy> enemyList = LevelManager.Ins.EnemyList;
+        enemyList = LevelManager.Ins.enemyList;
         for (int i = 0; i < enemyList.Count; i++)
         {
             enemyList[i].ChangeState(new CollectBrickState());
@@ -101,4 +103,24 @@ public class GameManager : Singleton<GameManager>
         return colorDataSO.materialsList;
     }
 
+    public void SetRandomCharacterColor()
+    {
+        characterList = LevelManager.Ins.characterList;
+        while (randomColorList.Count != characterList.Count)
+        {
+            ColorEnum colorEnum = (ColorEnum)Random.Range(1, System.Enum.GetValues(typeof(ColorEnum)).Length);
+            if (!randomColorList.Contains(colorEnum))
+            {
+                characterList[randomColorList.Count].OnChangeColor(GetMaterial(colorEnum), colorEnum);
+                randomColorList.Add(colorEnum);
+            }
+        }
+
+    }
+
+    public void SetRandomBrickColor(Brick brick)
+    {
+        int id = Random.Range(1, randomColorList.Count);
+        brick.OnChangeColor(randomColorList[id]);
+    }
 }

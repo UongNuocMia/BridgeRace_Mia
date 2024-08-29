@@ -14,9 +14,9 @@ public class CollectBrickState : IState<Enemy>
     {
         if(enemy.randomBrick == enemy.BrickList.Count)
         {
-            enemy.ChangeState(new IdleState());
+            enemy.Move(LevelManager.Ins.endPointTransform);
         }
-        if (enemy.NearstBrick != null)
+        else if (enemy.NearstBrick != null)
         {
             enemy.Move(enemy.NearstBrick.transform);
         }

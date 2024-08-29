@@ -172,6 +172,7 @@ MonoBehaviour:
   - {fileID: 6348342145236188814, guid: b1a7c2ed2c660044f9f0eba6a985b425, type: 3}
   playerPrefab: {fileID: 8127309061321723543, guid: 0f7d517e02ad1bc42bb2eedd9e1256e4, type: 3}
   endPosition: {x: 0, y: 0, z: 0}
+  brickPrefab: {fileID: 7085948982878459276, guid: eab8f0ba4c723f54bbeeb14beb1f9621, type: 3}
 --- !u!224 &142112516 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8135886326569738822, guid: 56fae09712773584fb63896d473a98ee, type: 3}
@@ -711,7 +712,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dynamicJoystick: {fileID: 142112517}
-  colorDataSO: {fileID: 0}
+  colorDataSO: {fileID: 11400000, guid: 8684ea03c72a635469abbc7e5ed9eac1, type: 2}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
