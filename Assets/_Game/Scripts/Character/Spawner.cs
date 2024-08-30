@@ -13,6 +13,7 @@ public class Spawner : Singleton<Spawner>
 
     private Player player;
     private List<Vector3> randomPositionList = new();
+    private List<Vector3> positionBrickList = new();
 
     public List<Enemy> enemyList { private set; get; } = new();
     public List<Character> characterList { private set; get; } = new();
@@ -65,12 +66,14 @@ public class Spawner : Singleton<Spawner>
             List<Brick> brickList = brickDict.
                 Where(brick => brick.Value == colorEnum).
                 Select(brick => brick.Key).ToList();
-            Debug.Log("brickList count" + brickList.Count);
-            for (int i = 0; i < brickList.Count; i++)
+            for (int i = 0; i < randomPositionList.Count; i++)
             {
+                if (positionBrickList.Contains(randomPositionList[i]))
+                    continue;
+                if (i >= brickList.Count)
+                    break;
                 brickList[i].transform.position = randomPositionList[i];
-                Debug.Log("brickList position" + brickList[i].transform.position);
-                randomPositionList.RemoveAt(i);
+                positionBrickList.Add(randomPositionList[i]);
             }
         }
     }
