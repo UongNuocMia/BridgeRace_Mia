@@ -32,22 +32,23 @@ public class Enemy : Character
             currentState.OnExecute(this);
         }
         RaycastScan();
+        Debug.DrawRay(transform.forward, transform.forward * 5, Color.green);
     }
     public void Move(Transform target)
     {
+        agent.isStopped = !isCanMoveForward;
         Vector3 moveDirection = new Vector3(target.position.x, 0f, target.position.z);
-        Vector3 destination = moveDirection;
+        Vector3 destination = moveDirection; 
         agent.speed = speed;
         agent.SetDestination(destination);
-        float rotateSpeed = 5f;
         anim.SetBool(IS_RUNNING, true);
-        transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
+        transform.forward = Vector3.Slerp(transform.forward, moveDirection, 0);
     }
 
     protected override void AddBrick()
     {
         base.AddBrick();
-        ChangeState(new CollectBrickState());
+        FindNearestBrick();
     }
 
 
@@ -68,15 +69,17 @@ public class Enemy : Character
 
     public void FindNearestBrick()
     {
-        Dictionary< Brick,ColorEnum> brickDictOnGround = LevelManager.Ins.brickDict;
-        if(brickDictOnGround.Count > 0)
+        nearstBrick = null;
+        List<Brick> brickLis = Spawner.Ins.brickDict.Where(brick => brick.Value == characterColorEnum).Select(brick => brick.Key).ToList();
+        if (brickLis.Count > 0)
         {
-            float distance = 10;
-            foreach (var item in brickDictOnGround)
+            float distance = 100f;
+           
+            foreach (Brick brick in brickLis)
             {
-                if (item.Value == characterColorEnum && distance < Vector3.Distance(this.transform.position, item.Key.transform.position))
+                if (brick.isShow() && distance > Vector3.Distance(transform.position, brick.transform.position) )
                 {
-                    nearstBrick = item.Key;
+                    nearstBrick = brick;
                 }
             }
         }

@@ -24,12 +24,16 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         Vector3 moveDirection = new Vector3(dynamicJoystick.Direction.x, 0f, dynamicJoystick.Direction.y);
+        if(!player.isCanMoveForward&& moveDirection.z > 0)
+        {
+            moveDirection.z = 0;
+        }
         Vector3 destination = transform.position + moveDirection;
 
         agent.speed = player.GetPlayerSpeed();
         agent.SetDestination(destination);
         isRunning = moveDirection != Vector3.zero;
-        float rotateSpeed = 10f;
+        float rotateSpeed = 5f;
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
     }
 

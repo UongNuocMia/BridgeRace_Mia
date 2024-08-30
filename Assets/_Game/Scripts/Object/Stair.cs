@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Stair : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private MeshRenderer meshRenderer;
+    public ColorEnum stairColor { private set; get; } = ColorEnum.White;
 
-    // Update is called once per frame
-    void Update()
+
+    public void OnChangeColor(ColorEnum color)
     {
-        
+        meshRenderer.material = GameManager.Ins.GetMaterial(color);
+        stairColor = color;
     }
 }

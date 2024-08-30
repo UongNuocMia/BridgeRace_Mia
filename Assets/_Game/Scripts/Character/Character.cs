@@ -8,6 +8,9 @@ public  class Character : GameUnit
     [SerializeField] protected Transform brickPosition;
     [SerializeField] private SkinnedMeshRenderer colorRenderer;
     [SerializeField] protected float speed = 5;
+    protected int currentStage = 0;
+    protected bool isOnBridge = false;
+    protected bool isNextStage = false;
     protected float interactRange;
     protected float heightOfBrick = 0.5f;
     protected ColorEnum characterColorEnum;
@@ -15,6 +18,7 @@ public  class Character : GameUnit
     protected List<Brick> brickList = new();
     protected NavMeshAgent agent;
     
+    public bool isCanMoveForward { private set; get; } = true;
     
 
     private void Start()
@@ -40,24 +44,55 @@ public  class Character : GameUnit
             {
                 CheckBrick(brick);
             }
-            if (hit.transform.TryGetComponent(out Bridge bridge))
-            {
-                CheckBridge(bridge);
-            }
-            if (hit.transform.TryGetComponent(out EndLevel endLevel))
+            else if (hit.transform.TryGetComponent(out EndLevel endLevel))
             {
                 ReachEndPoint();
             }
+            else if (hit.transform.TryGetComponent(out Stair stair))
+            {
+                CheckStair(stair);
+                isOnBridge = true;
+                isCanMoveForward = IsCanMoveForward(stair);
+            }
+            else if (hit.transform.TryGetComponent(out Stage stage))
+            {
+                if (isNextStage) return;
+                currentStage++;
+                LevelManager.Ins.CharacterMoveToNextStage(currentStage, characterColorEnum);
+                isNextStage = true;
+            }
         }
+        else
+        {
+            isCanMoveForward = true;
+            isOnBridge = false;
+        }
+    }
+
+    public bool IsCanMoveForward(Stair stair)
+    {
+        if (stair.stairColor == characterColorEnum)
+            return true;
+        if (isOnBridge && brickList.Count > 0)
+            return true;
+        if (stair.stairColor == ColorEnum.White && brickList.Count == 0)
+            return false;
+        return false;
     }
     private void ReachEndPoint()
     {
+        RemoveAllBrick();
         GameManager.Ins.ChangeState(GameState.Finish);
     }
 
-    private void CheckBridge(Bridge bridge)
+    private void CheckStair(Stair stair)
     {
-
+        if (stair.stairColor != characterColorEnum && brickList.Count > 0)
+        {
+            isCanMoveForward = true;
+            stair.OnChangeColor(characterColorEnum);
+            RemoveBrick();
+        }
     }
 
     private void CheckBrick(Brick brick)
@@ -79,12 +114,22 @@ public  class Character : GameUnit
 
     protected virtual void RemoveBrick()
     {
-
+        if (brickList.Count > 0)
+        {
+            brickList[brickList.Count - 1].OnRemoveBox();
+            brickList.RemoveAt(brickList.Count - 1);
+        }
     }
 
     protected virtual void RemoveAllBrick()
     {
-
+        if (brickList.Count > 0)
+        {
+            for (int i = brickList.Count - 1; i <= 0; i++)
+            {
+                brickList.RemoveAt(i);
+            }
+        }
     }
     private void HandlerBrickHeight()
     {

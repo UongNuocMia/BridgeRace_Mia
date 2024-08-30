@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveToBridgeState : MonoBehaviour
+public class MoveToBridgeState : IState<Enemy>
 {
-    // Start is called before the first frame update
-    void Start()
+    public void OnEnter(Enemy enemy)
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void OnExecute(Enemy enemy)
     {
-        
+        if (enemy.BrickList.Count > 0)
+        {
+            enemy.Move(LevelManager.Ins.endPointTransform);
+        }
+        else
+        {
+            enemy.ChangeState(new CollectBrickState());
+        }
+    }
+
+    public void OnExit(Enemy enemy)
+    {
+
     }
 }

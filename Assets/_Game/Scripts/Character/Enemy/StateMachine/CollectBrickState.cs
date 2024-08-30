@@ -12,9 +12,10 @@ public class CollectBrickState : IState<Enemy>
 
     public void OnExecute(Enemy enemy)
     {
-        if(enemy.randomBrick == enemy.BrickList.Count)
+        if(enemy.randomBrick == enemy.BrickList.Count || enemy.NearstBrick == null)
         {
-            enemy.Move(LevelManager.Ins.endPointTransform);
+            enemy.ChangeState(new MoveToBridgeState());
+            //enemy.Move(LevelManager.Ins.endPointTransform);
         }
         else if (enemy.NearstBrick != null)
         {

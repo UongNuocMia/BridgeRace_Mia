@@ -56,12 +56,12 @@ public class GameManager : Singleton<GameManager>
     public void PrepareLevel()
     {
         LevelManager.Ins.OnLoadMap();
-        player = LevelManager.Ins.GetPlayer();
+        player = Spawner.Ins.GetPlayer();
         CameraFollow.FindPlayer(player.transform);
     }
     public void OnStartGame()
     {
-        enemyList = LevelManager.Ins.enemyList;
+        enemyList = Spawner.Ins.enemyList;
         for (int i = 0; i < enemyList.Count; i++)
         {
             enemyList[i].ChangeState(new CollectBrickState());
@@ -89,7 +89,6 @@ public class GameManager : Singleton<GameManager>
 
     private void OnFinish()
     {
-
     }
 
     public static bool IsState(GameState state) => gameState == state;
@@ -105,7 +104,7 @@ public class GameManager : Singleton<GameManager>
 
     public void SetRandomCharacterColor()
     {
-        characterList = LevelManager.Ins.characterList;
+        characterList = Spawner.Ins.characterList;
         while (randomColorList.Count != characterList.Count)
         {
             ColorEnum colorEnum = (ColorEnum)Random.Range(1, System.Enum.GetValues(typeof(ColorEnum)).Length);
@@ -120,7 +119,7 @@ public class GameManager : Singleton<GameManager>
 
     public void SetRandomBrickColor(Brick brick)
     {
-        int id = Random.Range(1, randomColorList.Count);
+        int id = Random.Range(0, randomColorList.Count);
         brick.OnChangeColor(randomColorList[id]);
     }
 }

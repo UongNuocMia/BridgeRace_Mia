@@ -23,6 +23,12 @@ public class Brick : GameUnit
         colorRenderer.material = GameManager.Ins.GetMaterial(colorEnum);
     }
 
+    public void OnRemoveBox()
+    {
+        OnHideCollision(true);
+        OnHideVisual(true);
+    }
+
     public void OnCollectBox()
     {
         OnHideCollision(true);
