@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -14,7 +12,6 @@ public class GameManager : Singleton<GameManager>
     //[SerializeField] CSVData csv;
     [SerializeField] private DynamicJoystick dynamicJoystick;
     [SerializeField] private ColorDataSO colorDataSO;
-    private List<Enemy> enemyList; 
     private Player player;
 
     private static GameState gameState = GameState.MainMenu;
@@ -23,8 +20,9 @@ public class GameManager : Singleton<GameManager>
     public List<Character> characterList { private set; get; }
     public List<ColorEnum> randomColorList { private set; get; } = new();
 
+    public Character winner;
 
-    private int score;
+    public int score { private set; get; } = 0;
     protected void Awake()
     {
         //base.Awake();
@@ -42,9 +40,9 @@ public class GameManager : Singleton<GameManager>
         //csv.OnInit();
         //userData?.OnInitData();
 
-        //ChangeState(GameState.MainMenu);
+        ChangeState(GameState.MainMenu);
 
-        UIManager.Ins.OpenUI<MianMenu>();
+        UIManager.Ins.OpenUI<MainMenu>();
         PrepareLevel();
     }
 
@@ -61,10 +59,10 @@ public class GameManager : Singleton<GameManager>
     }
     public void OnStartGame()
     {
-        enemyList = Spawner.Ins.enemyList;
-        for (int i = 0; i < enemyList.Count; i++)
+        characterList = Spawner.Ins.characterList;
+        for (int i = 0; i < characterList.Count; i++)
         {
-            enemyList[i].ChangeState(new CollectBrickState());
+            characterList[i].OnStartGame();
         }
     }
 
@@ -76,6 +74,7 @@ public class GameManager : Singleton<GameManager>
             case GameState.MainMenu:
                 break;
             case GameState.GamePlay:
+                OnStartGame();
                 break;
             case GameState.Finish:
                 OnFinish();
@@ -89,6 +88,29 @@ public class GameManager : Singleton<GameManager>
 
     private void OnFinish()
     {
+        Dictionary<Character, int> charactersScore = new Dictionary<Character, int>();
+        for (int i = 0; i < characterList.Count; i++)
+        {
+            charactersScore.Add(characterList[i], characterList[i].score);
+            characterList[i].OnEndGame();
+        }
+        var top3Characters = charactersScore.
+                                OrderByDescending(pair => pair.Value)
+                                .Take(3).Select(pair => pair.Key).ToList();
+
+        if(winner is Enemy)
+        {
+            UIManager.Ins.OpenUI<Lose>();
+        }
+        else
+        {
+            top3Characters[0] = player;
+            UIManager.Ins.OpenUI<Win>();
+        }
+        for (int i = 0; i < top3Characters.Count; i++)
+        {
+            top3Characters[i].OnResult(LevelManager.Ins.rankTransformList[i],i);
+        }
     }
 
     public static bool IsState(GameState state) => gameState == state;

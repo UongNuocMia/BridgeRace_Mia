@@ -81,9 +81,9 @@ public class Spawner : Singleton<Spawner>
     public List<Vector3> RandomPosition(Transform startPoint)
     {
         List<Vector3> randomList = new();
-        int rows = 5;
-        int columns = 6;
-        float spacing = 4.5f;
+        int rows = 12;
+        int columns = 9;
+        float spacing = 2f;
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < columns; j++)

@@ -788,6 +788,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dynamicJoystick: {fileID: 142112517}
   colorDataSO: {fileID: 11400000, guid: 8684ea03c72a635469abbc7e5ed9eac1, type: 2}
+  winner: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

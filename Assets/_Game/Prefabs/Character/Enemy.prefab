@@ -125,7 +125,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!195 &6226090099502438848
 NavMeshAgent:
@@ -162,12 +162,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolType: 2
+  anim: {fileID: 4930550834488482770}
   brickPrefab: {fileID: 7085948982878459276, guid: eab8f0ba4c723f54bbeeb14beb1f9621, type: 3}
   brickPosition: {fileID: 974734185727051147}
   colorRenderer: {fileID: 2066069752385230893}
   speed: 4
-  anim: {fileID: 4930550834488482770}
-  randomBrick: 0
 --- !u!136 &1399940374758312473
 CapsuleCollider:
   m_ObjectHideFlags: 0

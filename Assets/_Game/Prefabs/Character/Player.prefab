@@ -44,7 +44,6 @@ GameObject:
   - component: {fileID: 5148882491249915562}
   - component: {fileID: 8127309061321723543}
   - component: {fileID: 646315966275650529}
-  - component: {fileID: 5650039023674775138}
   - component: {fileID: 4966595777320939260}
   - component: {fileID: 2728989219465919622}
   m_Layer: 0
@@ -96,7 +95,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!114 &8127309061321723543
 MonoBehaviour:
@@ -111,6 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolType: 0
+  anim: {fileID: 4979964873480994188}
   brickPrefab: {fileID: 7085948982878459276, guid: eab8f0ba4c723f54bbeeb14beb1f9621, type: 3}
   brickPosition: {fileID: 5035736384879574739}
   colorRenderer: {fileID: 5326013485817881002}
@@ -129,20 +129,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 5148882491249915562}
   player: {fileID: 8127309061321723543}
---- !u!114 &5650039023674775138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4153708503173132446}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a43a90bf7f524b45a68c4c4b2432530, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerMovement: {fileID: 646315966275650529}
-  animator: {fileID: 4979964873480994188}
 --- !u!195 &4966595777320939260
 NavMeshAgent:
   m_ObjectHideFlags: 0

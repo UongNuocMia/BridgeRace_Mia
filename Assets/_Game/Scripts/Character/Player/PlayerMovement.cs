@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,10 +6,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Player player;
     private bool isRunning;
-    private NavMeshAgent agent;
     private void Start()
     {
-        agent = player.GetNavMeshAgent();
         dynamicJoystick = GameManager.Ins.DynamicJoystick;
     }
 
@@ -23,17 +18,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
+        if (!GameManager.IsState(GameState.GamePlay))
+        {
+            isRunning = false;
+            return;
+        }
         Vector3 moveDirection = new Vector3(dynamicJoystick.Direction.x, 0f, dynamicJoystick.Direction.y);
         if(!player.isCanMoveForward&& moveDirection.z > 0)
         {
             moveDirection.z = 0;
         }
-        Vector3 destination = transform.position + moveDirection;
-
-        agent.speed = player.GetPlayerSpeed();
-        agent.SetDestination(destination);
-        isRunning = moveDirection != Vector3.zero;
         float rotateSpeed = 5f;
+        transform.position += moveDirection.normalized * player.GetPlayerSpeed() * Time.deltaTime;
+        isRunning = moveDirection != Vector3.zero;
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
     }
 

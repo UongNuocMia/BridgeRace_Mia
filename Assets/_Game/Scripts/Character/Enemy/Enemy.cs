@@ -1,57 +1,53 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : Character
-{
-    private const string IS_RUNNING = "IsRunning";
-
-    [SerializeField] private Animator anim;
-
-    public int randomBrick;
-    private Brick nearstBrick;
+{ 
     private IState<Enemy> currentState;
-
-    public Brick NearstBrick => nearstBrick;
+    public int randomBrick { private set; get; }
+    public Brick nearstBrick { private set; get; }
     public List<Brick> BrickList => brickList;
 
     protected override void OnInit()
     {
         base.OnInit();
         ChangeState(new IdleState());
+        isRunning = false;
         randomBrick = Random.Range(5, 10);
     }
-
 
     // Update is called once per frame
     private void Update()
     {
         if (currentState != null)
-        {
             currentState.OnExecute(this);
+        if (GameManager.IsState(GameState.GamePlay))
+        {
+            if (isRunning)
+                ChangeAnim(Constants.RUN_ANIM);
+            else
+                ChangeAnim(Constants.IDLE_ANIM);
         }
-        RaycastScan();
-        Debug.DrawRay(transform.forward, transform.forward * 5, Color.green);
     }
     public void Move(Transform target)
     {
-        agent.isStopped = !isCanMoveForward;
+        isRunning = true;
         Vector3 moveDirection = new Vector3(target.position.x, 0f, target.position.z);
         Vector3 destination = moveDirection; 
         agent.speed = speed;
         agent.SetDestination(destination);
-        anim.SetBool(IS_RUNNING, true);
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, 0);
     }
+
 
     protected override void AddBrick()
     {
         base.AddBrick();
-        FindNearestBrick();
+        if (!isEndGame)
+            ChangeState(new CollectBrickState());
     }
-
-
     public void ChangeState(IState<Enemy> newState)
     {
         if (currentState != null)
@@ -66,7 +62,6 @@ public class Enemy : Character
             currentState.OnEnter(this);
         }
     }
-
     public void FindNearestBrick()
     {
         nearstBrick = null;
@@ -84,5 +79,17 @@ public class Enemy : Character
             }
         }
         
+    }
+
+    public override void OnStartGame()
+    {
+        base.OnStartGame();
+        ChangeState(new CollectBrickState());
+    }
+    public override void OnEndGame()
+    {
+        base.OnEndGame();
+        isRunning = false;
+        ChangeState(new IdleState());
     }
 }

@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public enum ColorEnum
 {
@@ -24,9 +21,10 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField] private Vector3 endPosition;
 
     public int characterNumb { private set; get; } = 0;
-    public List<Transform> spawnBrickPointList { private set; get; } = new();
-    public List<Vector3> positionList { private set; get; }
     public Transform endPointTransform { private set; get; }
+    public List<Vector3> positionList { private set; get; }
+    public List<Transform> rankTransformList { private set; get; }
+    public List<Transform> spawnBrickPointList { private set; get; } = new();
 
 
     public void OnLoadMap()
@@ -45,6 +43,7 @@ public class LevelManager : Singleton<LevelManager>
         spawnBrickPointList = currentMap.GetSpawnBrickPointList();
         positionList = currentMap.GetSpawnCharacterPosition();
         endPointTransform = currentMap.GetEndPointTransform();
+        rankTransformList = currentMap.GetListTransform();
         int indexOfPlayer = Random.Range(0, 6);
         Spawner.Ins.GenarateCharacter(positionList, indexOfPlayer);
         Spawner.Ins.GenarateBrick(spawnBrickPointList[0],ColorEnum.White);

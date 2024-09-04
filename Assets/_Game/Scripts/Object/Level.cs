@@ -1,13 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Level : MonoBehaviour
 {
-    [SerializeField] private Brick brickPrefab;
-    [SerializeField] private List<Transform> spawnBrickPointList;
-    [SerializeField] private Transform spawnCharacterPoint;
     [SerializeField] private Transform endPoint;
+    [SerializeField] private Transform spawnCharacterPoint;
+    [SerializeField] private List<Transform> spawnBrickPointList;
+    [SerializeField] private EndLevel winRank;
     public void OnInit()
     {
         GetSpawnCharacterPosition();
@@ -33,5 +32,10 @@ public class Level : MonoBehaviour
     public Transform GetEndPointTransform()
     {
         return endPoint;
+    }
+
+    public List<Transform> GetListTransform()
+    {
+        return winRank.GetListTransform();
     }
 }

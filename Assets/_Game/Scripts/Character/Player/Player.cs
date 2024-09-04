@@ -1,12 +1,27 @@
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
-
 public class Player : Character
 {
-    public NavMeshAgent GetNavMeshAgent()
+    private PlayerMovement playerMovement;
+
+    protected override void OnInit()
     {
-        return agent;
+        base.OnInit();
+        playerMovement = GetComponent<PlayerMovement>();
+    }
+
+    private void Update()
+    {
+        if (GameManager.IsState(GameState.GamePlay))
+        {
+            if (playerMovement.IsRunning())
+            {
+                ChangeAnim(Constants.RUN_ANIM);
+            }
+            else
+            {
+                ChangeAnim(Constants.IDLE_ANIM);
+            }
+        }
     }
 
     public float GetPlayerSpeed()

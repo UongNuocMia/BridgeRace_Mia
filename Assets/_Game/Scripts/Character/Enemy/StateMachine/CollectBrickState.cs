@@ -8,18 +8,18 @@ public class CollectBrickState : IState<Enemy>
     public void OnEnter(Enemy enemy)
     {
         enemy.FindNearestBrick();
+        if (enemy.nearstBrick != null)
+        {
+            enemy.Move(enemy.nearstBrick.transform);
+        }
     }
 
     public void OnExecute(Enemy enemy)
     {
-        if(enemy.randomBrick == enemy.BrickList.Count || enemy.NearstBrick == null)
+        if(enemy.BrickList.Count >= enemy.randomBrick || enemy.nearstBrick == null)
         {
             enemy.ChangeState(new MoveToBridgeState());
             //enemy.Move(LevelManager.Ins.endPointTransform);
-        }
-        else if (enemy.NearstBrick != null)
-        {
-            enemy.Move(enemy.NearstBrick.transform);
         }
     }
     
