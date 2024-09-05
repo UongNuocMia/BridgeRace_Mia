@@ -19,4 +19,15 @@ public class GameUnit : MonoBehaviour
     }
 
     public PoolType poolType;
+
+    public void SetPositionAndRotation(Vector3 pos, Quaternion rot)
+    {
+        tf.position = pos;
+        tf.rotation = rot;
+    }
+
+    public void SetPosition(Vector3 pos)
+    {
+        tf.position = pos;
+    }
 }

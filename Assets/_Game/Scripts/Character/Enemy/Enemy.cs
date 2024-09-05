@@ -34,18 +34,17 @@ public class Enemy : Character
     public void Move(Transform target)
     {
         isRunning = true;
-        Vector3 moveDirection = new Vector3(target.position.x, 0f, target.position.z);
+        Vector3 moveDirection = new Vector3(target.position.x, target.position.y, target.position.z);
         Vector3 destination = moveDirection; 
         agent.speed = speed;
         agent.SetDestination(destination);
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, 0);
     }
 
-
     protected override void AddBrick()
     {
         base.AddBrick();
-        if (!isEndGame)
+        if (brickList.Count <= randomBrick && GameManager.IsState(GameState.GamePlay))
             ChangeState(new CollectBrickState());
     }
     public void ChangeState(IState<Enemy> newState)
@@ -90,6 +89,18 @@ public class Enemy : Character
     {
         base.OnEndGame();
         isRunning = false;
+        Move(transform);
+        ChangeState(new IdleState());
+    }
+
+    public override void OnPrepareGame()
+    {
+        base.OnPrepareGame();
+        ChangeState(new IdleState());
+    }
+    public override void OnSetting()
+    {
+        Move(transform);
         ChangeState(new IdleState());
     }
 }

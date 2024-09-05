@@ -12,7 +12,7 @@ public class Brick : GameUnit
     public ColorEnum BrickColorEnum => brickColorEnum;
 
     private void OnHideVisual(bool isShow) => visualBrick.SetActive(!isShow);
-    private void OnHideCollision(bool isShow) => boxCollider.enabled = !isShow;
+    public void OnHideCollision(bool isShow) => boxCollider.enabled = !isShow;
 
     public bool isShow() => visualBrick.gameObject.activeInHierarchy;
 

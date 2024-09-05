@@ -7,10 +7,13 @@ public class CollectBrickState : IState<Enemy>
 {
     public void OnEnter(Enemy enemy)
     {
-        enemy.FindNearestBrick();
-        if (enemy.nearstBrick != null)
+        if (enemy.BrickList.Count <= enemy.randomBrick)
         {
-            enemy.Move(enemy.nearstBrick.transform);
+            enemy.FindNearestBrick();
+            if (enemy.nearstBrick != null)
+            {
+                enemy.Move(enemy.nearstBrick.transform);
+            }
         }
     }
 

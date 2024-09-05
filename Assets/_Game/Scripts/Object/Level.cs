@@ -3,15 +3,11 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
+    [SerializeField] private EndLevel winPlatform;
     [SerializeField] private Transform endPoint;
     [SerializeField] private Transform spawnCharacterPoint;
     [SerializeField] private List<Transform> spawnBrickPointList;
-    [SerializeField] private EndLevel winRank;
-    public void OnInit()
-    {
-        GetSpawnCharacterPosition();
-    }
-
+    [SerializeField] private List<Transform> stageTransformList;
     public List<Vector3> GetSpawnCharacterPosition()
     {
         List<Vector3> transformList = new();
@@ -34,8 +30,18 @@ public class Level : MonoBehaviour
         return endPoint;
     }
 
-    public List<Transform> GetListTransform()
+    public List<Transform> GetTransformList()
     {
-        return winRank.GetListTransform();
+        return winPlatform.GetTransformList();
+    }
+
+    public List<MeshRenderer> GetMeshRenderersList()
+    {
+        return winPlatform.GetMeshRenderersList();
+    }
+
+    public List<Transform> GetStageTransformList()
+    {
+        return stageTransformList;
     }
 }

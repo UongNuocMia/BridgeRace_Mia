@@ -6,7 +6,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private Vector3 offset; // x = -5; y = 10
     [SerializeField] private float speed = 20;
 
-    public static void FindPlayer(Transform playerTransform)
+    public static void FindCharacter(Transform playerTransform)
     {
         target = playerTransform;
     }

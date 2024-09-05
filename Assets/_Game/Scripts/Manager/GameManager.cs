@@ -2,8 +2,6 @@
 using System.Linq;
 using UnityEngine;
 
-
-
 public enum GameState { MainMenu, GamePlay, Finish, Setting }
 
 public class GameManager : Singleton<GameManager>
@@ -14,15 +12,17 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private ColorDataSO colorDataSO;
     private Player player;
 
-    private static GameState gameState = GameState.MainMenu;
+    public Character winner;
     public DynamicJoystick DynamicJoystick => dynamicJoystick;
-    public List<Brick> brickinGroundList { private set; get; }
+
+    public int playerScore { private set; get; }
     public List<Character> characterList { private set; get; }
     public List<ColorEnum> randomColorList { private set; get; } = new();
+    public int Level { private set; get; }
 
-    public Character winner;
+    private static GameState gameState = GameState.MainMenu;
+    public static bool IsState(GameState state) => gameState == state;
 
-    public int score { private set; get; } = 0;
     protected void Awake()
     {
         //base.Awake();
@@ -43,23 +43,23 @@ public class GameManager : Singleton<GameManager>
         ChangeState(GameState.MainMenu);
 
         UIManager.Ins.OpenUI<MainMenu>();
-        PrepareLevel();
-    }
-
-    public void HandlerScore()
-    {
-        score++;
+        
     }
 
     public void PrepareLevel()
     {
+        Level = Data.Ins.GetLevel();
         LevelManager.Ins.OnLoadMap();
         player = Spawner.Ins.GetPlayer();
-        CameraFollow.FindPlayer(player.transform);
+        CameraFollow.FindCharacter(player.transform);
+        characterList = Spawner.Ins.characterList;
+        for (int i = 0; i < characterList.Count; i++)
+        {
+            characterList[i].OnPrepareGame();
+        }
     }
     public void OnStartGame()
     {
-        characterList = Spawner.Ins.characterList;
         for (int i = 0; i < characterList.Count; i++)
         {
             characterList[i].OnStartGame();
@@ -72,6 +72,7 @@ public class GameManager : Singleton<GameManager>
         switch (state)
         {
             case GameState.MainMenu:
+                PrepareLevel();
                 break;
             case GameState.GamePlay:
                 OnStartGame();
@@ -80,13 +81,49 @@ public class GameManager : Singleton<GameManager>
                 OnFinish();
                 break;
             case GameState.Setting:
+                OnSetting();
                 break;
             default:
                 break;
         }
     }
 
+    private void OnSetting()
+    {
+        for (int i = 0; i < characterList.Count; i++)
+        {
+            characterList[i].OnSetting();
+        }    
+    }
+
     private void OnFinish()
+    {
+        List<Character> top3Characters = GetTop3Characters();
+        playerScore = player.score;
+        if (winner is Enemy)
+        {
+            UIManager.Ins.OpenUI<Lose>();
+        }
+        else
+        {
+            top3Characters[0] = player;
+            UIManager.Ins.OpenUI<Win>();
+            Level = Level += 1;
+            if (Level >= LevelManager.Ins.totalLevelNumb)
+            {
+                Level = 0;
+            }
+            Data.Ins.SetLevel(Level);
+        }
+        for (int i = 0; i < top3Characters.Count; i++)
+        {
+            top3Characters[i].OnResult(LevelManager.Ins.rankTransformList[i], i);
+            LevelManager.Ins.meshRenderersList[i].material = GetMaterial(top3Characters[i].characterColorEnum);
+        }
+        CameraFollow.FindCharacter(top3Characters[0].transform);
+    }
+
+    private List<Character> GetTop3Characters()
     {
         Dictionary<Character, int> charactersScore = new Dictionary<Character, int>();
         for (int i = 0; i < characterList.Count; i++)
@@ -97,31 +134,12 @@ public class GameManager : Singleton<GameManager>
         var top3Characters = charactersScore.
                                 OrderByDescending(pair => pair.Value)
                                 .Take(3).Select(pair => pair.Key).ToList();
-
-        if(winner is Enemy)
-        {
-            UIManager.Ins.OpenUI<Lose>();
-        }
-        else
-        {
-            top3Characters[0] = player;
-            UIManager.Ins.OpenUI<Win>();
-        }
-        for (int i = 0; i < top3Characters.Count; i++)
-        {
-            top3Characters[i].OnResult(LevelManager.Ins.rankTransformList[i],i);
-        }
+        return top3Characters;
     }
-
-    public static bool IsState(GameState state) => gameState == state;
 
     public Material GetMaterial(ColorEnum colorEnum)
     {
         return colorDataSO.GetMaterials(colorEnum);
-    }
-    public List<Material> GetMaterialList()
-    {
-        return colorDataSO.materialsList;
     }
 
     public void SetRandomCharacterColor()

@@ -7,10 +7,11 @@ public class Win : UICanvas
     public void MainMenuButton()
     {
         UIManager.Ins.OpenUI<MainMenu>();
+        GameManager.Ins.ChangeState(GameState.MainMenu);
         Close(0);
     }
     private void OnEnable()
     {
-        score.text = GameManager.Ins.score.ToString();
+        score.text = GameManager.Ins.playerScore.ToString();
     }
 }

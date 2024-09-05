@@ -6,6 +6,7 @@ public class Setting : UICanvas
 {
     public void ContinueButton()
     {
+        GameManager.Ins.ChangeState(GameState.GamePlay);
         Close(0);
     }
 }

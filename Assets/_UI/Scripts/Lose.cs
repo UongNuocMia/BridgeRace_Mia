@@ -11,6 +11,6 @@ public class Lose : UICanvas
     }
     private void OnEnable()
     {
-        score.text = GameManager.Ins.score.ToString();
+        score.text = GameManager.Ins.playerScore.ToString();
     }
 }
