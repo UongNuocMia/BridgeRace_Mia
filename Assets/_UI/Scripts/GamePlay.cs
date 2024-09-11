@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class GamePlay : UICanvas
 {
-    [SerializeField] private Text scoreText;
+    [SerializeField] private Text LevelText;
 
 
     private void OnEnable()
     {
-        scoreText.text = "Score: " +GameManager.Ins.playerScore.ToString();
+        LevelText.text = "Level: " + (GameManager.Ins.Level + 1).ToString();
     }
 
     public void SettingButton()

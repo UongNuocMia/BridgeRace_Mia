@@ -14,14 +14,7 @@ public class Player : Character
     {
         if (GameManager.IsState(GameState.GamePlay))
         {
-            if (playerMovement.IsRunning())
-            {
-                ChangeAnim(Constants.RUN_ANIM);
-            }
-            else
-            {
-                ChangeAnim(Constants.IDLE_ANIM);
-            }
+            IsRunningAnim(playerMovement.IsRunning());
         }
     }
 

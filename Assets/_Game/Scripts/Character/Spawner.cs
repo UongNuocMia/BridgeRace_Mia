@@ -25,7 +25,7 @@ public class Spawner : Singleton<Spawner>
         {
             for (int i = 0; i < characterList.Count; i++)
             {
-                characterList[i].SetPositionAndRotation(positionList[i], Quaternion.Euler(new Vector3(0, 180, 0)));
+                characterList[i].SetPositionAndRotation(positionList[i], Quaternion.Euler(Vector3.zero));
             }
         }
         else

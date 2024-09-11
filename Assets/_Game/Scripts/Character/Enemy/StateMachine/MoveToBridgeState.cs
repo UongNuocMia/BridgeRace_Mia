@@ -1,4 +1,6 @@
 ﻿
+using UnityEngine;
+
 public class MoveToBridgeState : IState<Enemy>
 {
     public void OnEnter(Enemy enemy)
@@ -10,8 +12,9 @@ public class MoveToBridgeState : IState<Enemy>
     public void OnExecute(Enemy enemy)
     {
 
-        if (enemy.BrickList.Count <= 0) // CHANGE LATER, VÔ LÝ Ở CHỖ KHI CẦU FULL GẠCH MÀU ĐÓ NHƯNG BRICKLIST = 0 THÌ QUAY LẠI
+        if (enemy.BrickList.Count <0) // change later
         {
+            Debug.Log("Khong di tiep duoc");
             enemy.ChangeState(new CollectBrickState());
         }
     }

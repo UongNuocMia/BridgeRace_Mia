@@ -170,7 +170,7 @@ MonoBehaviour:
   levelList:
   - {fileID: 6348342145236188814, guid: b1a7c2ed2c660044f9f0eba6a985b425, type: 3}
   - {fileID: 6348342145236188814, guid: c418a71429279ee4791d03f1508ff204, type: 3}
-  - {fileID: 6348342145236188814, guid: 3d60f8c7adf2e574ca3fba5258b4b1ae, type: 3}
+  - {fileID: 6348342145236188814, guid: 845cf693f5705ad458564242254cf0fd, type: 3}
   endPosition: {x: 0, y: 0, z: 0}
 --- !u!224 &142112516 stripped
 RectTransform:

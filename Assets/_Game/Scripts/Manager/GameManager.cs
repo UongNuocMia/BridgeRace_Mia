@@ -42,30 +42,8 @@ public class GameManager : Singleton<GameManager>
 
         ChangeState(GameState.MainMenu);
 
-        UIManager.Ins.OpenUI<MainMenu>();
         
     }
-
-    public void PrepareLevel()
-    {
-        Level = Data.Ins.GetLevel();
-        LevelManager.Ins.OnLoadMap();
-        player = Spawner.Ins.GetPlayer();
-        CameraFollow.FindCharacter(player.transform);
-        characterList = Spawner.Ins.characterList;
-        for (int i = 0; i < characterList.Count; i++)
-        {
-            characterList[i].OnPrepareGame();
-        }
-    }
-    public void OnStartGame()
-    {
-        for (int i = 0; i < characterList.Count; i++)
-        {
-            characterList[i].OnStartGame();
-        }
-    }
-
     public void ChangeState(GameState state)
     {
         gameState = state;
@@ -88,6 +66,35 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    private void PrepareLevel()
+    {
+        UIManager.Ins.OpenUI<MainMenu>();
+        Level = Data.Ins.GetLevel();
+        LevelManager.Ins.OnLoadMap();
+        player = Spawner.Ins.GetPlayer();
+        CameraFollow.FindCharacter(player.transform);
+        characterList = Spawner.Ins.characterList;
+        for (int i = 0; i < characterList.Count; i++)
+        {
+            characterList[i].OnPrepareGame();
+        }
+    }
+    private void OnStartGame()
+    {
+        for (int i = 0; i < characterList.Count; i++)
+        {
+            characterList[i].OnStartGame();
+        }
+    }
+    public void OnPlayAgain()
+    {
+        ChangeState(GameState.MainMenu);
+        for (int i = 0; i < characterList.Count; i++)
+        {
+            characterList[i].OnEndGame();
+        }
+    }
+
     private void OnSetting()
     {
         for (int i = 0; i < characterList.Count; i++)
@@ -100,18 +107,18 @@ public class GameManager : Singleton<GameManager>
     {
         List<Character> top3Characters = GetTop3Characters();
         playerScore = player.score;
+        UIManager.Ins.CloseUI<GamePlay>();
         if (winner is Enemy)
         {
             UIManager.Ins.OpenUI<Lose>();
         }
         else
         {
-            top3Characters[0] = player;
             UIManager.Ins.OpenUI<Win>();
             Level = Level += 1;
             if (Level >= LevelManager.Ins.totalLevelNumb)
             {
-                Level = 0;
+                Level = 0; // cần thêm phần thông báo hết level
             }
             Data.Ins.SetLevel(Level);
         }
@@ -125,15 +132,20 @@ public class GameManager : Singleton<GameManager>
 
     private List<Character> GetTop3Characters()
     {
+        List<Character> top3Characters = new List<Character>();
         Dictionary<Character, int> charactersScore = new Dictionary<Character, int>();
         for (int i = 0; i < characterList.Count; i++)
         {
+            if (characterList[i] == winner)
+                continue;
             charactersScore.Add(characterList[i], characterList[i].score);
             characterList[i].OnEndGame();
         }
-        var top3Characters = charactersScore.
+        top3Characters.Add(winner);
+        winner.OnEndGame();
+        top3Characters.AddRange( charactersScore.
                                 OrderByDescending(pair => pair.Value)
-                                .Take(3).Select(pair => pair.Key).ToList();
+                                .Take(2).Select(pair => pair.Key));
         return top3Characters;
     }
 

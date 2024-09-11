@@ -8,7 +8,7 @@ public class Constants
 
     //Anim
     public const string IDLE_ANIM = "Idle";
-    public const string RUN_ANIM = "IsRunningOld";
+    public const string RUN_ANIM = "IsRunning";
     public const string WIN_ANIM = "Win";
     public const string LOSE_ANIM = "Lose";
 }

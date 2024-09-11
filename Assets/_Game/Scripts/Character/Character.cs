@@ -45,7 +45,7 @@ public  class Character : GameUnit
             return true;
         if (isOnBridge && brickList.Count > 0)
             return true;
-        if (stair.stairColor == ColorEnum.White && brickList.Count == 0)
+        if (stair.stairColor != characterColorEnum && brickList.Count == 0)
             return false;
         return true;
     }
@@ -161,6 +161,11 @@ public  class Character : GameUnit
             anim.SetTrigger(currentAnimName);
         }
     }
+
+    protected void IsRunningAnim(bool isRunning)
+    {
+        anim.SetBool(Constants.RUN_ANIM, isRunning);
+    }
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag(Constants.BRICK_TAG))
@@ -180,6 +185,8 @@ public  class Character : GameUnit
         {
             Stair stair = collider.GetComponent<Stair>();
             isCanMoveForward = IsCanMoveForward(stair);
+            if (isCanMoveForward)
+                Debug.Log("true");
             isOnBridge = true;
             CheckStair(stair);
         }
@@ -187,12 +194,16 @@ public  class Character : GameUnit
         {
             ReachEndPoint();
         }
-        else
-        {
-            isOnBridge = false;
-            isCanMoveForward = IsCanMoveForward();
-        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        isOnBridge = false;
+        isCanMoveForward = true;
     }
 
+    public void SetRunning(bool isRunning)
+    {
+        this.isRunning = isRunning;
+    }
 
 }

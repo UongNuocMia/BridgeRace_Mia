@@ -9,4 +9,10 @@ public class Setting : UICanvas
         GameManager.Ins.ChangeState(GameState.GamePlay);
         Close(0);
     }
+
+    public void TryAgainButton()
+    {
+        GameManager.Ins.OnPlayAgain();
+        Close(0);
+    }
 }

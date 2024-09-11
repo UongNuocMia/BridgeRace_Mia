@@ -14,7 +14,6 @@ public class Enemy : Character
     {
         base.OnInit();
         ChangeState(new IdleState());
-        isRunning = false;
         randomBrick = Random.Range(5, 10);
     }
 
@@ -25,19 +24,16 @@ public class Enemy : Character
             currentState.OnExecute(this);
         if (GameManager.IsState(GameState.GamePlay))
         {
-            if (isRunning)
-                ChangeAnim(Constants.RUN_ANIM);
-            else
-                ChangeAnim(Constants.IDLE_ANIM);
+            IsRunningAnim(isRunning);
         }
     }
     public void Move(Transform target)
     {
-        isRunning = true;
         Vector3 moveDirection = new Vector3(target.position.x, target.position.y, target.position.z);
         Vector3 destination = moveDirection; 
         agent.speed = speed;
         agent.SetDestination(destination);
+        isRunning = destination != Vector3.zero;
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, 0);
     }
 
@@ -88,7 +84,6 @@ public class Enemy : Character
     public override void OnEndGame()
     {
         base.OnEndGame();
-        isRunning = false;
         Move(transform);
         ChangeState(new IdleState());
     }
@@ -97,6 +92,7 @@ public class Enemy : Character
     {
         base.OnPrepareGame();
         ChangeState(new IdleState());
+        IsRunningAnim(isRunning);
     }
     public override void OnSetting()
     {
