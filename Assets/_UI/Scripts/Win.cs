@@ -6,12 +6,17 @@ public class Win : UICanvas
 
     public void MainMenuButton()
     {
-        UIManager.Ins.OpenUI<MainMenu>();
-        GameManager.Ins.ChangeState(GameState.MainMenu);
+        GameManager.Ins.OnNextLevel();
+        Close(0);
+    }
+
+    public void TryAgainButton()
+    {
+        GameManager.Ins.OnPlayAgain();
         Close(0);
     }
     private void OnEnable()
     {
-        score.text = GameManager.Ins.playerScore.ToString();
+        score.text = GameManager.Ins.PlayerScore.ToString();
     }
 }

@@ -10,15 +10,15 @@ public class GameManager : Singleton<GameManager>
     //[SerializeField] CSVData csv;
     [SerializeField] private DynamicJoystick dynamicJoystick;
     [SerializeField] private ColorDataSO colorDataSO;
-    private Player player;
 
-    public Character winner;
+    private Player player;
+    public Character Winner;
     public DynamicJoystick DynamicJoystick => dynamicJoystick;
 
-    public int playerScore { private set; get; }
-    public List<Character> characterList { private set; get; }
-    public List<ColorEnum> randomColorList { private set; get; } = new();
     public int Level { private set; get; }
+    public int PlayerScore { private set; get; }
+    public bool IsMaxLevel { private set; get; }
+    public List<ColorEnum> RandomColorList { private set; get; } = new();
 
     private static GameState gameState = GameState.MainMenu;
     public static bool IsState(GameState state) => gameState == state;
@@ -68,86 +68,63 @@ public class GameManager : Singleton<GameManager>
 
     private void PrepareLevel()
     {
-        UIManager.Ins.OpenUI<MainMenu>();
         Level = Data.Ins.GetLevel();
+        UIManager.Ins.OpenUI<MainMenu>();
         LevelManager.Ins.OnLoadMap();
         player = Spawner.Ins.GetPlayer();
         CameraFollow.FindCharacter(player.transform);
-        characterList = Spawner.Ins.characterList;
-        for (int i = 0; i < characterList.Count; i++)
-        {
-            characterList[i].OnPrepareGame();
-        }
+        LevelManager.Ins.CharacterOnPrepare();
     }
     private void OnStartGame()
     {
-        for (int i = 0; i < characterList.Count; i++)
-        {
-            characterList[i].OnStartGame();
-        }
+        LevelManager.Ins.CharactersOnStartGame();
     }
     public void OnPlayAgain()
     {
         ChangeState(GameState.MainMenu);
-        for (int i = 0; i < characterList.Count; i++)
-        {
-            characterList[i].OnEndGame();
-        }
+        LevelManager.Ins.CharactersOnEndGame();
     }
 
     private void OnSetting()
     {
-        for (int i = 0; i < characterList.Count; i++)
-        {
-            characterList[i].OnSetting();
-        }    
+        LevelManager.Ins.CharactersOnSetting();
     }
 
     private void OnFinish()
     {
-        List<Character> top3Characters = GetTop3Characters();
-        playerScore = player.score;
+        LevelManager.Ins.CharactersOnEndGame();
+        List<Character> top3Characters = LevelManager.Ins.GetTop3Characters();
+        PlayerScore = player.Score;
         UIManager.Ins.CloseUI<GamePlay>();
-        if (winner is Enemy)
+        if (Winner is Enemy)
         {
             UIManager.Ins.OpenUI<Lose>();
         }
         else
         {
             UIManager.Ins.OpenUI<Win>();
-            Level = Level += 1;
-            if (Level >= LevelManager.Ins.totalLevelNumb)
-            {
-                Level = 0; // cần thêm phần thông báo hết level
-            }
-            Data.Ins.SetLevel(Level);
         }
         for (int i = 0; i < top3Characters.Count; i++)
         {
-            top3Characters[i].OnResult(LevelManager.Ins.rankTransformList[i], i);
-            LevelManager.Ins.meshRenderersList[i].material = GetMaterial(top3Characters[i].characterColorEnum);
+            top3Characters[i].OnResult(LevelManager.Ins.RankTransformList[i], i);
+            LevelManager.Ins.MeshRenderersList[i].material = GetMaterial(top3Characters[i].CharacterColorEnum);
         }
         CameraFollow.FindCharacter(top3Characters[0].transform);
     }
 
-    private List<Character> GetTop3Characters()
+    public void OnNextLevel()
     {
-        List<Character> top3Characters = new List<Character>();
-        Dictionary<Character, int> charactersScore = new Dictionary<Character, int>();
-        for (int i = 0; i < characterList.Count; i++)
+        Level = Level += 1;
+        if (Level >= LevelManager.Ins.totalLevelNumb)
         {
-            if (characterList[i] == winner)
-                continue;
-            charactersScore.Add(characterList[i], characterList[i].score);
-            characterList[i].OnEndGame();
+            IsMaxLevel = true;
+            Level = 0;
         }
-        top3Characters.Add(winner);
-        winner.OnEndGame();
-        top3Characters.AddRange( charactersScore.
-                                OrderByDescending(pair => pair.Value)
-                                .Take(2).Select(pair => pair.Key));
-        return top3Characters;
+        Data.Ins.SetLevel(Level);
+        ChangeState(GameState.MainMenu);
     }
+
+   
 
     public Material GetMaterial(ColorEnum colorEnum)
     {
@@ -156,22 +133,22 @@ public class GameManager : Singleton<GameManager>
 
     public void SetRandomCharacterColor()
     {
-        characterList = Spawner.Ins.characterList;
-        while (randomColorList.Count != characterList.Count)
+        while (RandomColorList.Count != Spawner.Ins.CharacterList.Count)
         {
             ColorEnum colorEnum = (ColorEnum)Random.Range(1, System.Enum.GetValues(typeof(ColorEnum)).Length);
-            if (!randomColorList.Contains(colorEnum))
+            if (!RandomColorList.Contains(colorEnum))
             {
-                characterList[randomColorList.Count].OnChangeColor(GetMaterial(colorEnum), colorEnum);
-                randomColorList.Add(colorEnum);
+                Spawner.Ins.CharacterList[RandomColorList.Count].OnChangeColor(GetMaterial(colorEnum), colorEnum);
+                RandomColorList.Add(colorEnum);
             }
         }
-
     }
 
     public void SetRandomBrickColor(Brick brick)
     {
-        int id = Random.Range(0, randomColorList.Count);
-        brick.OnChangeColor(randomColorList[id]);
+        int id = Random.Range(0, RandomColorList.Count);
+        brick.OnChangeColor(RandomColorList[id]);
     }
+
+    public void IsPlayAgain(bool isPlayAgain) => IsMaxLevel = !isPlayAgain;
 }

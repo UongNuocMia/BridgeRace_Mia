@@ -2,7 +2,7 @@ public class IdleState : IState<Enemy>
 {
     public void OnEnter(Enemy enemy)
     {
-        enemy.SetRunning(false);
+        enemy.ChangeAnim(Constants.IDLE_ANIM);
     }
 
     public void OnExecute(Enemy enemy)

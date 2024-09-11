@@ -6,15 +6,16 @@ using UnityEngine.AI;
 public class Enemy : Character
 { 
     private IState<Enemy> currentState;
-    public int randomBrick { private set; get; }
-    public Brick nearstBrick { private set; get; }
+    public int RandomBrick { private set; get; }
+    public Brick NearstBrick { private set; get; }
     public List<Brick> BrickList => brickList;
+
 
     protected override void OnInit()
     {
         base.OnInit();
         ChangeState(new IdleState());
-        randomBrick = Random.Range(5, 10);
+        RandomBrick = Random.Range(5, 10);   
     }
 
     // Update is called once per frame
@@ -22,25 +23,23 @@ public class Enemy : Character
     {
         if (currentState != null)
             currentState.OnExecute(this);
-        if (GameManager.IsState(GameState.GamePlay))
-        {
-            IsRunningAnim(isRunning);
-        }
     }
     public void Move(Transform target)
     {
+        if (!agent.isOnNavMesh) return;
         Vector3 moveDirection = new Vector3(target.position.x, target.position.y, target.position.z);
         Vector3 destination = moveDirection; 
         agent.speed = speed;
         agent.SetDestination(destination);
         isRunning = destination != Vector3.zero;
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, 0);
+        ChangeAnim(Constants.RUN_ANIM);
     }
 
     protected override void AddBrick()
     {
         base.AddBrick();
-        if (brickList.Count <= randomBrick && GameManager.IsState(GameState.GamePlay))
+        if (brickList.Count <= RandomBrick && GameManager.IsState(GameState.GamePlay))
             ChangeState(new CollectBrickState());
     }
     public void ChangeState(IState<Enemy> newState)
@@ -59,8 +58,8 @@ public class Enemy : Character
     }
     public void FindNearestBrick()
     {
-        nearstBrick = null;
-        List<Brick> brickLis = Spawner.Ins.brickDict.Where(brick => brick.Value == characterColorEnum).Select(brick => brick.Key).ToList();
+        NearstBrick = null;
+        List<Brick> brickLis = Spawner.Ins.BrickDict.Where(brick => brick.Value == CharacterColorEnum).Select(brick => brick.Key).ToList();
         if (brickLis.Count > 0)
         {
             float distance = 100f;
@@ -69,7 +68,7 @@ public class Enemy : Character
             {
                 if (brick.isShow() && distance > Vector3.Distance(transform.position, brick.transform.position) )
                 {
-                    nearstBrick = brick;
+                    NearstBrick = brick;
                 }
             }
         }
@@ -92,7 +91,6 @@ public class Enemy : Character
     {
         base.OnPrepareGame();
         ChangeState(new IdleState());
-        IsRunningAnim(isRunning);
     }
     public override void OnSetting()
     {

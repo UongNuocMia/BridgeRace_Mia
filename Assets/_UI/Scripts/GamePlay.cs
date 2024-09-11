@@ -4,20 +4,11 @@ using UnityEngine.UI;
 
 public class GamePlay : UICanvas
 {
-    [SerializeField] private Text LevelText;
-
-
-    private void OnEnable()
-    {
-        LevelText.text = "Level: " + (GameManager.Ins.Level + 1).ToString();
-    }
-
     public void SettingButton()
     {
         UIManager.Ins.OpenUI<Setting>();
         GameManager.Ins.ChangeState(GameState.Setting);
     }
-
 
     //public void WinButton()
     //{

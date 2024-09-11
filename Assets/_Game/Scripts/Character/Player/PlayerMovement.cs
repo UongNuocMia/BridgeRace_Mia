@@ -18,13 +18,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        if (!GameManager.IsState(GameState.GamePlay))
+        if (!GameManager.IsState(GameState.GamePlay)|| dynamicJoystick.Direction == Vector2.zero)
         {
             isRunning = false;
             return;
         }
         Vector3 moveDirection = new Vector3(dynamicJoystick.Direction.x, 0f, dynamicJoystick.Direction.y);
-        if(!player.isCanMoveForward&& moveDirection.z > 0)
+        if(!player.IsCanMoveForward&& moveDirection.z > 0)
         {
             moveDirection.z = 0;
         }

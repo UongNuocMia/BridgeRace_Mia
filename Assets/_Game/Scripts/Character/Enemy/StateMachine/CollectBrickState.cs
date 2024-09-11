@@ -7,21 +7,21 @@ public class CollectBrickState : IState<Enemy>
 {
     public void OnEnter(Enemy enemy)
     {
-        if (enemy.BrickList.Count <= enemy.randomBrick)
+        if (enemy.BrickList.Count <= enemy.RandomBrick)
         {
             enemy.FindNearestBrick();
-            if (enemy.nearstBrick != null)
+            if (enemy.NearstBrick != null)
             {
-                enemy.Move(enemy.nearstBrick.transform);
+                enemy.Move(enemy.NearstBrick.transform);
             }
         }
     }
 
     public void OnExecute(Enemy enemy)
     {
-        if(enemy.BrickList.Count >= enemy.randomBrick || enemy.nearstBrick == null)
+        if(enemy.BrickList.Count >= enemy.RandomBrick || enemy.NearstBrick == null)
         {
-            enemy.ChangeState(new MoveToBridgeState());
+            enemy.ChangeState(new MoveToEndPointState());
             //enemy.Move(LevelManager.Ins.endPointTransform);
         }
     }

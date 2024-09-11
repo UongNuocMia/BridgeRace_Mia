@@ -13,7 +13,7 @@ public class Level : MonoBehaviour
         List<Vector3> transformList = new();
         int characterSpacing = 4;
 
-        for (int i = 0; i < LevelManager.Ins.characterNumb; i++)
+        for (int i = 0; i < LevelManager.Ins.CharacterNumb; i++)
         {
             transformList.Add(spawnCharacterPoint.position + new Vector3(i * characterSpacing, 0f, 0f));
         }

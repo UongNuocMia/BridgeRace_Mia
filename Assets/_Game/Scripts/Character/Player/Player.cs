@@ -14,7 +14,10 @@ public class Player : Character
     {
         if (GameManager.IsState(GameState.GamePlay))
         {
-            IsRunningAnim(playerMovement.IsRunning());
+            if (playerMovement.IsRunning())
+                ChangeAnim(Constants.RUN_ANIM);
+            else
+                ChangeAnim(Constants.IDLE_ANIM);
         }
     }
 

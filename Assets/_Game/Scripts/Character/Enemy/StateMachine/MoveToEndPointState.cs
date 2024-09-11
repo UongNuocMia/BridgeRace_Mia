@@ -1,20 +1,17 @@
 ﻿
 using UnityEngine;
 
-public class MoveToBridgeState : IState<Enemy>
+public class MoveToEndPointState : IState<Enemy>
 {
     public void OnEnter(Enemy enemy)
     {
-        enemy.Move(LevelManager.Ins.endPointTransform);
+        enemy.Move(LevelManager.Ins.EndPointTransform);
     }
-
 
     public void OnExecute(Enemy enemy)
     {
-
-        if (enemy.BrickList.Count <0) // change later
+        if (!enemy.IsCanMoveForward)
         {
-            Debug.Log("Khong di tiep duoc");
             enemy.ChangeState(new CollectBrickState());
         }
     }

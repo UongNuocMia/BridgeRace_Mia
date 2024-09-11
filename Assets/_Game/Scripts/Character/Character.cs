@@ -12,17 +12,17 @@ public  class Character : GameUnit
 
     private string currentAnimName;
     protected int currentStage = 0;
-    protected bool isEndGame = false;
-    protected bool isRunning = false;
-    protected bool isOnBridge = false;
+    protected bool isEndGame;
+    protected bool isRunning;
+    protected bool isOnBridge;
     protected float interactRange;
     protected float heightOfBrick = 0.5f;
 
-    protected NavMeshAgent agent;
+    protected NavMeshAgent agent; // player cung dung de tranh truong hop bay ra ngoai
     protected List<Brick> brickList = new();
-    public int score { protected set; get; } = 0;
-    public bool isCanMoveForward { private set; get; } = true;
-    public ColorEnum characterColorEnum { protected set; get; }
+    public int Score { protected set; get; } = 0;
+    public bool IsCanMoveForward { private set; get; } = true;
+    public ColorEnum CharacterColorEnum { protected set; get; }
    
 
     private void Start()
@@ -32,44 +32,43 @@ public  class Character : GameUnit
     protected virtual void OnInit()
     {
         interactRange = 0.2f;
-        score = 0;
+        Score = 0;
         currentStage = 0;
         agent = GetComponent<NavMeshAgent>();
     }
 
-    public bool IsCanMoveForward(Stair stair = null)
+    public bool IsCanMoveForwardCheck(Stair stair = null)
     {
         if (stair == null)
             return true;
-        if (stair.stairColor == characterColorEnum)
+        if (stair.StairColor == CharacterColorEnum)
             return true;
         if (isOnBridge && brickList.Count > 0)
             return true;
-        if (stair.stairColor != characterColorEnum && brickList.Count == 0)
+        if (stair.StairColor != CharacterColorEnum && brickList.Count == 0)
             return false;
         return true;
     }
     private void ReachEndPoint()
     {
         if (isEndGame) return;
-        Debug.Log("Finish");
-        GameManager.Ins.winner = this;
+        GameManager.Ins.Winner = this;
         GameManager.Ins.ChangeState(GameState.Finish);
     }
 
     private void CheckStair(Stair stair)
     {
-        if (stair.stairColor != characterColorEnum && brickList.Count > 0)
+        if (stair.StairColor != CharacterColorEnum && brickList.Count > 0)
         {
-            isCanMoveForward = true;
-            stair.OnChangeColor(characterColorEnum);
+            IsCanMoveForward = true;
+            stair.OnChangeColor(CharacterColorEnum);
             RemoveBrick();
         }
     }
 
     private void CheckBrick(Brick brick)
     {
-        if (characterColorEnum != brick.BrickColorEnum || !brick.isShow())
+        if (CharacterColorEnum != brick.BrickColorEnum || !brick.isShow())
             return;
         brick.OnCollectBox();
         AddBrick();
@@ -78,13 +77,13 @@ public  class Character : GameUnit
     protected virtual void AddBrick()
     {
         if (isEndGame) return;
-        Brick brickClone = Instantiate(brickPrefab, transform);
+        Brick brickClone = Instantiate(brickPrefab, brickPosition);
         brickClone.transform.localPosition = Vector3.zero;
-        brickClone.OnChangeColor(characterColorEnum);
+        brickClone.OnChangeColor(CharacterColorEnum);
         brickClone.OnHideCollision(true);
         brickList.Add(brickClone);
         HandlerBrickHeight();
-        score++;
+        Score++;
     }
 
     protected virtual void RemoveBrick()
@@ -108,15 +107,15 @@ public  class Character : GameUnit
     private void HandlerBrickHeight()
     {
         if (brickList.Count == 0) return;
-        Vector3 newHeightY = brickPosition.localPosition;
+        Vector3 newHeightY = Vector3.zero;
         newHeightY.y += Mathf.Abs((brickList.Count - 1) * heightOfBrick);
-        brickList[brickList.Count - 1].transform.localPosition = new Vector3(newHeightY.x, newHeightY.y, newHeightY.z);
+        brickList[brickList.Count - 1].transform.localPosition = newHeightY;
     }
 
     public void OnChangeColor(Material material,ColorEnum colorEnum)
     {
         colorRenderer.material = material;
-        characterColorEnum = colorEnum;
+        CharacterColorEnum = colorEnum;
     }
 
     public virtual void OnStartGame()
@@ -127,7 +126,7 @@ public  class Character : GameUnit
     public virtual void OnPrepareGame()
     {
         OnInit();
-        ChangeAnim("Idle");
+        ChangeAnim(Constants.IDLE_ANIM);
     }
 
     public virtual void OnEndGame()
@@ -152,20 +151,16 @@ public  class Character : GameUnit
         
     }
 
-    protected void ChangeAnim(string animName)
+    public void ChangeAnim(string animName)
     {
         if (currentAnimName != animName)
         {
-            anim.ResetTrigger(animName);
+            anim.ResetTrigger(currentAnimName);
             currentAnimName = animName;
             anim.SetTrigger(currentAnimName);
         }
     }
 
-    protected void IsRunningAnim(bool isRunning)
-    {
-        anim.SetBool(Constants.RUN_ANIM, isRunning);
-    }
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag(Constants.BRICK_TAG))
@@ -173,24 +168,22 @@ public  class Character : GameUnit
             Brick brick = collider.GetComponent<Brick>();
             CheckBrick(brick);
         }
-        else if (collider.CompareTag(Constants.STAGE_TAG))
+        if (collider.CompareTag(Constants.STAGE_TAG))
         {
             Stage stage = collider.GetComponent<Stage>();
             if (currentStage > (int)stage.GetStageEnum())
                 return;
             currentStage++;
-            LevelManager.Ins.CharacterMoveToNextStage(currentStage, characterColorEnum);
+            LevelManager.Ins.CharacterMoveToNextStage(currentStage, CharacterColorEnum);
         }
-        else if (collider.CompareTag(Constants.STAIR_TAG))
+        if (collider.CompareTag(Constants.STAIR_TAG))
         {
             Stair stair = collider.GetComponent<Stair>();
-            isCanMoveForward = IsCanMoveForward(stair);
-            if (isCanMoveForward)
-                Debug.Log("true");
+            IsCanMoveForward = IsCanMoveForwardCheck(stair);
             isOnBridge = true;
             CheckStair(stair);
         }
-        else if (collider.CompareTag(Constants.WIN_TAG))
+        if (collider.CompareTag(Constants.WIN_TAG))
         {
             ReachEndPoint();
         }
@@ -198,12 +191,6 @@ public  class Character : GameUnit
     private void OnTriggerExit(Collider other)
     {
         isOnBridge = false;
-        isCanMoveForward = true;
+        IsCanMoveForward = true;
     }
-
-    public void SetRunning(bool isRunning)
-    {
-        this.isRunning = isRunning;
-    }
-
 }

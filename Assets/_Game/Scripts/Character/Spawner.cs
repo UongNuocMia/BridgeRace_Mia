@@ -15,22 +15,22 @@ public class Spawner : Singleton<Spawner>
     private List<Vector3> randomPositionList = new();
     private List<Vector3> positionBrickList = new();
 
-    public List<Enemy> enemyList { private set; get; } = new();
-    public List<Character> characterList { private set; get; } = new();
-    public Dictionary<Brick, ColorEnum> brickDict { private set; get; } = new();
+    public List<Enemy> EnemyList { private set; get; } = new();
+    public List<Character> CharacterList { private set; get; } = new();
+    public Dictionary<Brick, ColorEnum> BrickDict { private set; get; } = new();
 
     public void GenarateCharacter(List<Vector3> positionList, int indexOfPlayer)
     {
-        if(characterList.Count > 0)
+        if(CharacterList.Count > 0)
         {
-            for (int i = 0; i < characterList.Count; i++)
+            for (int i = 0; i < CharacterList.Count; i++)
             {
-                characterList[i].SetPositionAndRotation(positionList[i], Quaternion.Euler(Vector3.zero));
+                CharacterList[i].SetPositionAndRotation(positionList[i], Quaternion.Euler(Vector3.zero));
             }
         }
         else
         {
-            for (int i = 0; i < LevelManager.Ins.characterNumb; i++)
+            for (int i = 0; i < LevelManager.Ins.CharacterNumb; i++)
             {
                 Character character;
                 if (indexOfPlayer == i)
@@ -41,9 +41,9 @@ public class Spawner : Singleton<Spawner>
                 else
                 {
                     character = SetUpEnemy(positionList[i]);
-                    enemyList.Add((Enemy)character);
+                    EnemyList.Add((Enemy)character);
                 }
-                characterList.Add(character);
+                CharacterList.Add(character);
             }
             GameManager.Ins.SetRandomCharacterColor();
         }
@@ -53,11 +53,11 @@ public class Spawner : Singleton<Spawner>
     {
         randomPositionList = RandomPosition(startPoint);
         int allBrick = randomPositionList.Count;
-        int maxBrickWithSameColor = allBrick / LevelManager.Ins.characterNumb;
-        if (colorEnum == ColorEnum.White && brickDict.Count > 0)
+        int maxBrickWithSameColor = allBrick / LevelManager.Ins.CharacterNumb;
+        if (colorEnum == ColorEnum.White && BrickDict.Count > 0)
         {
             positionBrickList.Clear();
-            List<Brick> brickList = brickDict.Select(brick => brick.Key).ToList();
+            List<Brick> brickList = BrickDict.Select(brick => brick.Key).ToList();
             for (int i = 0; i < randomPositionList.Count; i++)
             {
                 brickList[i].SetPosition(randomPositionList[i]);
@@ -71,27 +71,29 @@ public class Spawner : Singleton<Spawner>
                 Brick brickClone = (Brick)SimplePool.Spawn(brickPrefab, randomPositionList[i], Quaternion.identity);
             RandomAgain:
                 GameManager.Ins.SetRandomBrickColor(brickClone);
-                int brickColorCount = brickDict.Count(brick => brick.Value == brickClone.BrickColorEnum);
+                int brickColorCount = BrickDict.Count(brick => brick.Value == brickClone.BrickColorEnum);
                 if (maxBrickWithSameColor == brickColorCount)
                 {
                     goto RandomAgain;
                 }
-                brickDict.Add(brickClone, brickClone.BrickColorEnum);
+                BrickDict.Add(brickClone, brickClone.BrickColorEnum);
             }
 
         }
         else
         {
-            List<Brick> brickList = brickDict.
+            List<Brick> brickList = BrickDict.
                 Where(brick => brick.Value == colorEnum).
                 Select(brick => brick.Key).ToList();
+            int numbBrickSetSuccess = 0;
             for (int i = 0; i < randomPositionList.Count; i++)
             {
                 if (positionBrickList.Contains(randomPositionList[i]))
                     continue;
-                if (i >= brickList.Count)
+                if (numbBrickSetSuccess >= brickList.Count)
                     break;
-                brickList[i].SetPosition(randomPositionList[i]);
+                brickList[numbBrickSetSuccess].SetPosition(randomPositionList[i]);
+                numbBrickSetSuccess++;
                 positionBrickList.Add(randomPositionList[i]);
             }
         }
@@ -132,6 +134,6 @@ public class Spawner : Singleton<Spawner>
 
     public List<Enemy> GetListEnemy()
     {
-        return enemyList;
+        return EnemyList;
     }
 }
