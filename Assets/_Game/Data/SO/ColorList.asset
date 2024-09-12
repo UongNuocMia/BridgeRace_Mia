@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ColorList
   m_EditorClassIdentifier: 
   materialsList:
+  - {fileID: 0}
   - {fileID: 2100000, guid: 819b378b3b696aa4a9e81e19da23e7df, type: 2}
   - {fileID: 2100000, guid: 14006138b8fa7224b856609c6e6a85c2, type: 2}
   - {fileID: 2100000, guid: 2e43d97909c439d43b9531f35b1971ef, type: 2}
