@@ -6,5 +6,5 @@ public class ColorDataSO : ScriptableObject
 {
     public List<Material> materialsList;
 
-    public Material GetMaterials(ColorEnum colorEnum) => materialsList[(int)colorEnum];
+    public Material GetMaterials(ColorEnum colorEnum) => materialsList[(int)(colorEnum)];
 }

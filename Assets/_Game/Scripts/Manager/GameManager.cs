@@ -135,7 +135,7 @@ public class GameManager : Singleton<GameManager>
     {
         while (RandomColorList.Count != Spawner.Ins.CharacterList.Count)
         {
-            ColorEnum colorEnum = (ColorEnum)Random.Range(1, System.Enum.GetValues(typeof(ColorEnum)).Length);
+            ColorEnum colorEnum = (ColorEnum)Random.Range(2, System.Enum.GetValues(typeof(ColorEnum)).Length);
             if (!RandomColorList.Contains(colorEnum))
             {
                 Spawner.Ins.CharacterList[RandomColorList.Count].OnChangeColor(GetMaterial(colorEnum), colorEnum);

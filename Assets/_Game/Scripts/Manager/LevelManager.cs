@@ -5,15 +5,16 @@ using UnityEngine;
 
 public enum ColorEnum
 {
-    White, //none
-    Red,
-    Purple,
-    Green,
-    Blue,
-    Yellow,
-    Pink,
-    Black,
-    Grey,
+    None = 0,
+    White = 1,
+    Red = 2,
+    Purple = 3,
+    Green = 4,
+    Blue = 5,
+    Yellow = 6,
+    Pink = 7,
+    Black = 8,
+    Grey = 9,
 }
 
 
@@ -66,7 +67,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         int indexOfPlayer = Random.Range(0, 6);
         Spawner.Ins.GenarateCharacter(PositionList, indexOfPlayer);
-        Spawner.Ins.GenarateBrick(SpawnBrickPointList[0], ColorEnum.White);
+        Spawner.Ins.GenarateBrick(SpawnBrickPointList[0], ColorEnum.None);
         CharacterList = Spawner.Ins.CharacterList;
     }
 

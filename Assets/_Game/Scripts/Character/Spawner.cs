@@ -54,7 +54,7 @@ public class Spawner : Singleton<Spawner>
         randomPositionList = RandomPosition(startPoint);
         int allBrick = randomPositionList.Count;
         int maxBrickWithSameColor = allBrick / LevelManager.Ins.CharacterNumb;
-        if (colorEnum == ColorEnum.White && BrickDict.Count > 0)
+        if (colorEnum == ColorEnum.None && BrickDict.Count > 0)
         {
             positionBrickList.Clear();
             List<Brick> brickList = BrickDict.Select(brick => brick.Key).ToList();
@@ -64,7 +64,7 @@ public class Spawner : Singleton<Spawner>
             }
             return;
         }
-        if (colorEnum == ColorEnum.White)
+        if (colorEnum == ColorEnum.None)
         {
             for (int i = 0; i < randomPositionList.Count; i++)
             {
